@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # TerraView
 A clear, immersive view of the Earth — from globe to country-level insights.
 =======
@@ -77,4 +76,4 @@ globe/
 - **Build**: `npm run build`
 - **Preview**: `npm run preview`
 - **Lint**: `npm run lint`
->>>>>>> 17d5e93 (Initial commit)
+
