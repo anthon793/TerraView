@@ -1,0 +1,95 @@
+.terraview-globe {
+  width: 100%;
+  min-height: 400px;
+  background: radial-gradient(circle at 20% 20%, #14253a, #081420);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.continent-view {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.continent-chip {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #eef2f7;
+  border: 1px solid #d4d9e1;
+  cursor: pointer;
+}
+
+.country-layer {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+}
+
+.country-tag {
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid #d9dee7;
+  background: #f7f9fc;
+  cursor: pointer;
+  text-align: left;
+}
+
+.country-tag.is-active {
+  border-color: #4c8dff;
+  background: #e6f0ff;
+}
+
+.country-popup {
+  background: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e3e7ef;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  max-width: 320px;
+  padding: 12px;
+}
+
+.country-popup__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.country-popup__title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.country-popup__name {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.country-popup__region {
+  color: #5b6575;
+  font-size: 0.9rem;
+}
+
+.country-popup__close {
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.country-popup__body {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.country-popup__fact {
+  padding: 10px;
+  border-radius: 10px;
+  background: #f5f7fb;
+  color: #404a5c;
+}
