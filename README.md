@@ -1,49 +1,33 @@
 # TerraView
 A clear, immersive view of the Earth — from globe to country-level insights.
-=======
-# Interactive World Geography App - MVP
 
-A minimal but working MVP of an interactive world geography web app built with React, Vite, and 3D globe visualization.
+## Overview
+TerraView is an interactive web application that allows users to explore the world through a 3D globe interface. Users can zoom into continents, select individual countries, and view detailed, dynamic information such as population, land area, currency, languages, national flags, and rotating cultural facts like local dishes and traditions. The project focuses on combining geographic visualization, accurate country data, and clean UI design to deliver an engaging and educational experience.
 
-## Project Setup
+## 🎯 Project Goals
+- Make global geography interactive and engaging
+- Present country data in a clear, visual format
+- Encourage learning through dynamic facts
+- Maintain performance and accuracy across all countries
 
-### Prerequisites
-- Node.js (v20.13.1 or higher recommended)
-- npm (v10.5.2 or higher)
+## ✨ Features
+- 🌐 Interactive 3D Globe: rotate, zoom, and pan smoothly
+- 🗺️ Continent-Level Navigation: select a continent to expand and see its countries
+- 🏳️ Country Exploration: click any country to view details with a flag-inspired palette
+- 📊 Country Information: population, land area, capital, currency, languages, flag
+- 🎲 Dynamic Fun Facts: randomized cultural facts (dishes, traditions, notable highlights)
+- 🎨 Clean & Responsive UI: minimal popups, clear typography, desktop/tablet friendly
 
-### Installation Steps
+## 🧠 How TerraView Works
+1. Global View: start on the 3D globe
+2. Continent Focus: select a continent to zoom and highlight its countries
+3. Country Selection: open a popup with structured country data and visuals
+4. Dynamic Data: population/country data from public APIs, rotating fun facts, and flag-derived color palettes
 
-1. **Install Dependencies**
-   ```bash
-   npm install
-   ```
-
-2. **Start Development Server**
-   ```bash
-   npm run dev
-   ```
-
-3. **Open in Browser**
-   - Navigate to the URL shown in the terminal (typically `http://localhost:5173`)
-   - You should see a rotating 3D globe
-
-## Current Status
-
-### ✅ Completed (Step 1)
-- Vite + React project setup
-- Dependencies installed:
-  - `globe.gl` - 3D globe visualization
-  - `three.js` - 3D graphics library
-  - `d3.js` - Data visualization (for future continent maps)
-  - `tailwindcss` - Styling framework
-- Basic rotating 3D globe component (`GlobeView`)
-- Tailwind CSS configured
-
-### 🚧 Next Steps
-- Add continent click detection
-- Create continent expansion view
-- Add country information display
-- Integrate REST Countries API
+## 🛠️ Tech Stack
+- Frontend: JavaScript/TypeScript, HTML5, CSS3, React (Vite)
+- Rendering: WebGL/Three.js via globe.gl; Canvas API for flag color extraction
+- APIs & Data Sources: REST Countries (metadata), World Bank (population), curated cultural facts
 
 ## Project Structure
 
@@ -51,29 +35,58 @@ A minimal but working MVP of an interactive world geography web app built with R
 globe/
 ├── src/
 │   ├── components/
-│   │   └── GlobeView.jsx    # 3D rotating globe component
-│   ├── App.jsx              # Main app component
-│   ├── main.jsx             # React entry point
-│   └── index.css            # Tailwind CSS imports
-├── tailwind.config.js        # Tailwind configuration
-├── postcss.config.js         # PostCSS configuration
-└── package.json             # Dependencies and scripts
+│   │   ├── TerraViewGlobe.jsx
+│   │   ├── ContinentView.jsx
+│   │   ├── CountryLayer.jsx
+│   │   └── CountryPopup.jsx
+│   ├── services/
+│   │   ├── CountryDataService.js
+│   │   ├── PopulationService.js
+│   │   ├── FunFactEngine.js
+│   │   └── FlagColorExtractor.js
+│   ├── utils/
+│   │   ├── colorUtils.js
+│   │   ├── flagColorExtractor.js
+│   │   ├── countryMatcher.js
+│   │   ├── funFactsGenerator.js
+│   │   └── populationFormatter.js
+│   ├── styles/
+│   │   └── index.css
+│   ├── App.jsx
+│   ├── App.css
+│   ├── index.css
+│   ├── main.jsx
+│   └── assets/
+├── public/
+│   ├── terraview.svg
+│   └── vite.svg
+├── tailwind.config.js
+├── postcss.config.js
+├── vite.config.js
+├── package.json
+└── README.md
 ```
 
-## Tech Stack
+## Project Setup
 
-- **React** (Vite) - UI framework
-- **JavaScript** - Programming language
-- **globe.gl** - 3D globe visualization
-- **three.js** - 3D graphics
-- **D3.js** - Data visualization (for continent maps)
-- **Tailwind CSS** - Styling
-- **REST Countries API** - Country data (to be integrated)
+### Prerequisites
+- Node.js (v20.13.1 or higher recommended)
+- npm (v10.5.2 or higher)
 
-## Development
+### Installation
+1. Install dependencies
+   ```bash
+   npm install
+   ```
+2. Start the dev server
+   ```bash
+   npm run dev
+   ```
+3. Open in the browser (usually http://localhost:5173)
 
-- **Dev Server**: `npm run dev`
-- **Build**: `npm run build`
-- **Preview**: `npm run preview`
-- **Lint**: `npm run lint`
+### Scripts
+- Dev Server: `npm run dev`
+- Build: `npm run build`
+- Preview: `npm run preview`
+- Lint: `npm run lint`
 
