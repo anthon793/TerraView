@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import GlobeView from './components/GlobeView';
+import { loadCapitalData } from './services/CapitalService';
 
 /**
  * Main App Component
@@ -7,6 +9,13 @@ import GlobeView from './components/GlobeView';
  * Currently displays the GlobeView - we'll add view switching logic later.
  */
 function App() {
+  // Load capital data once at application startup
+  useEffect(() => {
+    loadCapitalData().catch(err => {
+      console.warn('Failed to preload capital data:', err);
+    });
+  }, []);
+
   return (
     <div className="App">
       <GlobeView />
