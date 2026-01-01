@@ -52,7 +52,7 @@ export function useCountryPopulation(countryData) {
   const fetchAccuratePopulation = useCallback(async () => {
     const countryCode = countryData?.cca2;
     
-    if (!countryCode || worldBankData || isLoading) return;
+    if (!countryCode) return;
 
     // Check cache first
     if (worldBankCache.has(countryCode)) {
@@ -77,7 +77,7 @@ export function useCountryPopulation(countryData) {
     } finally {
       setIsLoading(false);
     }
-  }, [countryData?.cca2, worldBankData, isLoading]);
+  }, [countryData?.cca2]);
 
   /**
    * Get formatted World Bank population
