@@ -199,15 +199,15 @@ function GlobeView() {
     globeRef.current = globe;
 
     // Configure basic globe settings
-    // Use a very light, simple base texture so polygons show clearly on top
-    const lightBaseSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500"><rect width="1000" height="500" fill="#8BBED8"/></svg>`;
+    // Use a deeper ocean blue base texture like classic educational globes
+    const lightBaseSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500"><rect width="1000" height="500" fill="#1E5A8E"/></svg>`;
     
     globe
       .globeImageUrl(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(lightBaseSvg)}`)
-      .backgroundColor('#ECF7FD') // Ocean background color
+      .backgroundColor('#1B4A72') // Deep ocean background color
       .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
       .showAtmosphere(false) // Disable atmosphere to see colors better
-      .atmosphereColor('#AAE0F9')
+      .atmosphereColor('#2C6FA8')
       .atmosphereAltitude(0.1);
 
     // Enable user interaction (click and drag to rotate, scroll to zoom)
@@ -505,7 +505,7 @@ function GlobeView() {
   return (
     <div
       className="w-full h-screen relative"
-      style={{ backgroundColor: '#ECF7FD' }}
+      style={{ backgroundColor: '#1B4A72' }}
     >
       <div ref={globeEl} className="w-full h-full" />
       
