@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Project implementation guides
+implementation-guide.md
+implementation_guide.md
+ImplementationGuide.md
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
