@@ -45,16 +45,16 @@ const RENDERER_REGISTRY = {
 // Mode metadata for UI
 export const MODE_INFO = [
     {
-        id: VISUALIZATION_MODES.GLOBE_POLITICAL,
-        name: 'Globe',
-        icon: '🌍',
-        description: 'Interactive 3D globe with colorful boundaries',
-    },
-    {
         id: VISUALIZATION_MODES.GLOBE_SATELLITE,
         name: 'Satellite',
         icon: '🛰️',
         description: '3D globe with satellite imagery',
+    },
+    {
+        id: VISUALIZATION_MODES.GLOBE_POLITICAL,
+        name: 'Globe',
+        icon: '🌍',
+        description: 'Interactive 3D globe with colorful boundaries',
     },
     {
         id: VISUALIZATION_MODES.FLAT_MAP,

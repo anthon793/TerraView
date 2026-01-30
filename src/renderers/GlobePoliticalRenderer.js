@@ -162,15 +162,16 @@ export default class GlobePoliticalRenderer extends BaseRenderer {
         this.globe = Globe()(this.globeElement);
 
         // Configure globe appearance
-        const lightBaseSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500"><rect width="1000" height="500" fill="#1E5A8E"/></svg>`;
+        // Using a deep, realistic ocean blue instead of flat diagram color
+        const lightBaseSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500"><rect width="1000" height="500" fill="#062035"/></svg>`;
 
         this.globe
             .globeImageUrl(`data:image/svg+xml;charset=utf-8,${encodeURIComponent(lightBaseSvg)}`)
-            .backgroundColor('#1B4A72')
+            .backgroundColor('#000011')
             .backgroundImageUrl('//unpkg.com/three-globe/example/img/night-sky.png')
-            .showAtmosphere(false)
-            .atmosphereColor('#2C6FA8')
-            .atmosphereAltitude(0.1);
+            .showAtmosphere(true)
+            .atmosphereColor('#3a7aca')
+            .atmosphereAltitude(0.15);
 
         // Configure controls
         this.setupControls();

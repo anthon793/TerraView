@@ -81,7 +81,7 @@ export default function TerraView() {
     const controllerRef = useRef(null);
 
     // Current mode state
-    const [currentMode, setCurrentMode] = useState(VISUALIZATION_MODES.GLOBE_POLITICAL);
+    const [currentMode, setCurrentMode] = useState(VISUALIZATION_MODES.GLOBE_SATELLITE);
     const [isLoadingMode, setIsLoadingMode] = useState(true);
 
     // Country popup state (from store)
@@ -139,7 +139,7 @@ export default function TerraView() {
         });
 
         // Initialize with default mode
-        controller.initialize(VISUALIZATION_MODES.GLOBE_POLITICAL)
+        controller.initialize(VISUALIZATION_MODES.GLOBE_SATELLITE)
             .then(() => {
                 setIsLoadingMode(false);
                 console.log('[TerraView] Initialized successfully');
