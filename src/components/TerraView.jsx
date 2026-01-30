@@ -197,6 +197,7 @@ export default function TerraView() {
                 onClose={handleClosePopup}
                 isLoadingCountry={popupState.isLoadingCountry}
                 localFacts={popupState.localFacts}
+                mode={currentMode}
             />
         </div>
     );
