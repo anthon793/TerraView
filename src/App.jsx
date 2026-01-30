@@ -1,12 +1,18 @@
 import { useEffect } from 'react';
-import GlobeView from './components/GlobeView';
+import TerraView from './components/TerraView';
 import { loadCapitalData } from './services/CapitalService';
+import './styles/TerraView.css';
 
 /**
  * Main App Component
  * 
  * This is the root component that controls the overall application flow.
- * Currently displays the GlobeView - we'll add view switching logic later.
+ * Now uses the multi-mode TerraView component for visualization.
+ * 
+ * Changes from original:
+ * - Replaced GlobeView with TerraView (multi-mode visualization)
+ * - TerraView handles mode switching (Globe, Satellite, 2D Map)
+ * - Country popup is now managed by the shared countryStore
  */
 function App() {
   // Load capital data once at application startup
@@ -18,7 +24,7 @@ function App() {
 
   return (
     <div className="App">
-      <GlobeView />
+      <TerraView />
     </div>
   );
 }
