@@ -290,12 +290,14 @@ export default class GlobePoliticalRenderer extends BaseRenderer {
             Math.min(this.MAX_ALTITUDE, this.currentAltitude + delta)
         );
 
+        // Get current position to maintain it while zooming
         const currentPOV = this.globe.pointOfView();
+
         this.globe.pointOfView({
-            lat: currentPOV.lat || 0,
-            lng: currentPOV.lng || 0,
+            lat: currentPOV.lat,
+            lng: currentPOV.lng,
             altitude: this.currentAltitude
-        }, 100);
+        });
     }
 
     /**
@@ -424,8 +426,14 @@ export default class GlobePoliticalRenderer extends BaseRenderer {
             // Auto-rotate if user hasn't interacted for 5 seconds
             const timeSinceInteraction = Date.now() - this.lastInteractionTime;
             if (!this.isUserInteracting && timeSinceInteraction > 5000) {
-                this.rotation += 0.1;
-                this.globe?.pointOfView({ lat: 0, lng: this.rotation, altitude: 2.5 }, 0);
+                const currentPOV = this.globe.pointOfView();
+                // Continue rotation from current position
+                this.rotation = (currentPOV.lng || 0) + 0.05;
+                this.globe.pointOfView({
+                    lat: currentPOV.lat,
+                    lng: this.rotation,
+                    altitude: currentPOV.altitude
+                });
             }
 
             this.animationFrameId = requestAnimationFrame(animate);
