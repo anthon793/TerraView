@@ -90,3 +90,26 @@ globe/
 - Preview: `npm run preview`
 - Lint: `npm run lint`
 
+## 🚀 Deployment
+
+### General
+To deploy the application, you can build the project and host the `dist` folder on any static site hosting service (Vercel, Netlify, GitHub Pages, etc.).
+
+1. Build the project:
+   ```bash
+   npm run build
+   ```
+2. The output will be in the `dist/` directory.
+
+### GitHub Pages
+To deploy to GitHub Pages, you can configure a workflow or push the `dist` folder contents to a `gh-pages` branch.
+
+**Using a script:**
+1. Update `vite.config.js` to set the base path if your repo is not at the root domain:
+   ```js
+   export default defineConfig({
+     base: '/repository-name/',
+     // ...
+   })
+   ```
+2. Create a deployment script or use `gh-pages` package.
