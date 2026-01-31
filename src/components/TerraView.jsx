@@ -169,11 +169,22 @@ export default function TerraView() {
         <div className="terraview">
             {/* Mode Switcher UI - Top Left */}
             <div className="terraview__controls">
-                <ModeSwitcher
-                    currentMode={currentMode}
-                    isLoading={isLoadingMode}
-                    onModeChange={handleModeChange}
-                />
+                <div className="flex flex-col gap-3">
+                    <ModeSwitcher
+                        currentMode={currentMode}
+                        isLoading={isLoadingMode}
+                        onModeChange={handleModeChange}
+                    />
+
+                    <button
+                        onClick={() => controllerRef.current?.selectRandomCountry()}
+                        className="mode-switcher w-full flex items-center justify-center gap-2 hover:bg-white/10 transition-colors text-white/90 font-medium text-xs sm:text-sm py-2"
+                        title="Fly to a random country"
+                    >
+                        <span>🎲</span>
+                        <span className="hidden sm:inline">Surprise Me</span>
+                    </button>
+                </div>
             </div>
 
             {/* Renderer Container */}

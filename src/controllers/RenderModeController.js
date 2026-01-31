@@ -244,6 +244,44 @@ export default class RenderModeController {
     }
 
     /**
+     * Select a random country and fly to it
+     */
+    async selectRandomCountry() {
+        // Ensure we have country data
+        if (!this.sharedGeoJson || !this.sharedGeoJson.features || this.sharedGeoJson.features.length === 0) {
+            console.warn('[ModeController] No shared GeoJSON data available for random selection');
+            // Try to get it from current renderer if not yet captured
+            const renderer = this.getCurrentRenderer();
+            if (renderer && renderer.getCountriesGeoJson) {
+                this.sharedGeoJson = renderer.getCountriesGeoJson();
+            }
+
+            if (!this.sharedGeoJson) return;
+        }
+
+        const features = this.sharedGeoJson.features;
+        // Simple random pick
+        const randomIndex = Math.floor(Math.random() * features.length);
+        const randomFeature = features[randomIndex];
+
+        if (!randomFeature) return;
+
+        const countryName = randomFeature.properties.NAME || randomFeature.properties.ADMIN;
+        console.log('[ModeController] Surprise! Flying to:', countryName);
+
+        // 1. Trigger valid store selection (popup)
+        // We import the selectCountry action directly to ensure it works consistently
+        const { selectCountry } = await import('../store/countryStore');
+        selectCountry(randomFeature);
+
+        // 2. Tell renderer to fly there
+        const renderer = this.getCurrentRenderer();
+        if (renderer && typeof renderer.focusOnCountry === 'function') {
+            renderer.focusOnCountry(randomFeature);
+        }
+    }
+
+    /**
      * Get the current renderer instance
      * @returns {BaseRenderer|null}
      */

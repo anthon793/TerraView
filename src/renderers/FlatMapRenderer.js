@@ -359,6 +359,30 @@ export default class FlatMapRenderer extends BaseRenderer {
         super.hide();
     }
 
+    handleCountryClick(feature) {
+        // Calling super handles the store update
+        super.handleCountryClick(feature);
+    }
+
+    /**
+     * Focus on a specific country
+     * @param {Object} feature - GeoJSON feature
+     */
+    focusOnCountry(feature) {
+        if (!feature || !this.map) return;
+
+        // Create a temporary layer to get bounds easily
+        const layer = L.geoJSON(feature);
+        const bounds = layer.getBounds();
+
+        // Fly to the bounds of the country
+        this.map.flyToBounds(bounds, {
+            padding: [50, 50],
+            maxZoom: 5, // Don't zoom in too close for large countries
+            duration: 1.5
+        });
+    }
+
     /**
      * Handle window resize
      */

@@ -222,6 +222,31 @@ export default class GlobeSatelliteRenderer extends BaseRenderer {
     }
 
     /**
+     * Focus on a specific country
+     * @param {Object} feature - GeoJSON feature
+     */
+    focusOnCountry(feature) {
+        if (!feature || !this.globe) return;
+
+        const center = this.getFeatureCenter(feature);
+
+        // Stop current animation
+        this.isUserInteracting = true; // Briefly look like interaction to pause auto-rotate
+
+        this.globe.pointOfView({
+            lat: center.lat,
+            lng: center.lng,
+            altitude: Math.min(this.currentAltitude, 2.0) // Zoom in slightly if far out
+        }, 1500); // 1.5s flight time
+
+        // Resume state after flight
+        setTimeout(() => {
+            this.isUserInteracting = false;
+            this.lastInteractionTime = Date.now();
+        }, 1600);
+    }
+
+    /**
      * Load country boundaries as vector overlay on top of satellite imagery
      * 
      * HOW BOUNDARIES ARE OVERLAYED ON SATELLITE:

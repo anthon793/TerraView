@@ -122,6 +122,55 @@ export default class BaseRenderer {
     }
 
     /**
+     * Focus camera on a specific country feature
+     * Must be implemented by subclasses
+     * @param {Object} feature - GeoJSON feature to focus on
+     */
+    focusOnCountry(feature) {
+        console.warn('focusOnCountry not implemented for this renderer');
+    }
+
+    /**
+     * Helper: Calculate the center (lat/lng) of a GeoJSON feature
+     * @param {Object} feature - GeoJSON feature
+     * @returns {Object} { lat, lng }
+     */
+    getFeatureCenter(feature) {
+        if (!feature || !feature.geometry) return { lat: 0, lng: 0 };
+
+        const geometry = feature.geometry;
+        let coords = [];
+
+        // Flatten coordinates based on type
+        if (geometry.type === 'Polygon') {
+            coords = geometry.coordinates[0];
+        } else if (geometry.type === 'MultiPolygon') {
+            // Use the largest polygon for center (approximation) or flatten all
+            // For simplicity, we flattening all points which gives a visual center
+            geometry.coordinates.forEach(poly => {
+                poly[0].forEach(p => coords.push(p));
+            });
+        }
+
+        if (coords.length === 0) return { lat: 0, lng: 0 };
+
+        let minLng = 180, maxLng = -180, minLat = 90, maxLat = -90;
+
+        coords.forEach(pt => {
+            const [lng, lat] = pt; // GeoJSON is [lng, lat]
+            if (lng < minLng) minLng = lng;
+            if (lng > maxLng) maxLng = lng;
+            if (lat < minLat) minLat = lat;
+            if (lat > maxLat) maxLat = lat;
+        });
+
+        return {
+            lat: (minLat + maxLat) / 2,
+            lng: (minLng + maxLng) / 2
+        };
+    }
+
+    /**
      * Resize handler - called when window resizes
      * Subclasses should override if they need to handle resize
      */

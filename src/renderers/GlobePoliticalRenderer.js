@@ -290,7 +290,6 @@ export default class GlobePoliticalRenderer extends BaseRenderer {
             Math.min(this.MAX_ALTITUDE, this.currentAltitude + delta)
         );
 
-        // Get current position to maintain it while zooming
         const currentPOV = this.globe.pointOfView();
 
         this.globe.pointOfView({
@@ -298,6 +297,31 @@ export default class GlobePoliticalRenderer extends BaseRenderer {
             lng: currentPOV.lng,
             altitude: this.currentAltitude
         });
+    }
+
+    /**
+     * Focus on a specific country
+     * @param {Object} feature - GeoJSON feature
+     */
+    focusOnCountry(feature) {
+        if (!feature || !this.globe) return;
+
+        const center = this.getFeatureCenter(feature);
+
+        // Stop current animation
+        this.isUserInteracting = true; // Briefly look like interaction to pause auto-rotate
+
+        this.globe.pointOfView({
+            lat: center.lat,
+            lng: center.lng,
+            altitude: Math.min(this.currentAltitude, 2.0)
+        }, 1500);
+
+        // Resume state after flight
+        setTimeout(() => {
+            this.isUserInteracting = false;
+            this.lastInteractionTime = Date.now();
+        }, 1600);
     }
 
     /**
