@@ -199,6 +199,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -262,46 +263,57 @@
    ============================================================================ */
 
 @media (max-width: 640px) {
-  /* Move controls to bottom center */
+
+  /* Floating Top-Right Controls - Always Visible */
   .terraview__controls {
-    top: auto;
-    left: 50%;
-    bottom: 30px;
-    transform: translateX(-50%);
-    width: max-content;
-    max-width: 95%;
+    top: 12px;
+    right: 12px;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    width: auto;
+    max-width: none;
   }
 
-  /* Layout controls side-by-side */
+  /* Stack controls vertically in compact floating menu */
   .controls-group {
-    flex-direction: row;
-    align-items: center; /* Align pills via center */
-    gap: 12px;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
   }
-  
-  /* Mode Switcher Pill */
+
+  /* Compact Mode Switcher - Horizontal pill */
   .mode-switcher {
-    padding: 6px; /* Tighter padding */
-    border-radius: 50px; /* Full pill */
+    padding: 4px;
+    border-radius: 24px;
     flex-direction: row;
     align-items: center;
-    gap: 4px;
-    background: rgba(0, 0, 0, 0.8); /* Darker for better contrast */
+    gap: 2px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
   }
 
   .mode-switcher__label {
     display: none;
   }
-  
+
   .mode-switcher__buttons {
     gap: 2px;
+    display: flex;
   }
-  
+
+  /* Compact icon-only mode buttons */
   .mode-button {
-    padding: 8px 12px;
+    padding: 10px;
+    min-width: 42px;
+    height: 42px;
     font-size: 12px;
-    border-radius: 20px; /* Rounder buttons */
-    background: transparent; /* Clean look */
+    border-radius: 20px;
+    background: transparent;
+    justify-content: center;
   }
 
   .mode-button:hover:not(:disabled) {
@@ -309,64 +321,92 @@
   }
 
   .mode-button--active {
-    background: #4ECDC4; /* Solid accent */
-    box-shadow: 0 2px 8px rgba(78, 205, 196, 0.3);
+    background: linear-gradient(135deg, #4ECDC4 0%, #45B7D1 100%);
+    box-shadow: 0 2px 10px rgba(78, 205, 196, 0.4);
   }
-  
+
   .mode-button__icon {
-    font-size: 14px;
-  }
-
-  /* Surprise Button Pill */
-  .surprise-button {
-    width: auto;
-    border-radius: 50px;
-    padding: 8px 16px;
-    height: 44px; /* Match height of switcher ~ approx */
-    background: rgba(0, 0, 0, 0.8);
-    background: linear-gradient(135deg, #FF6B6B 0%, #EE5253 100%); /* Distinct color for action */
-    border: none;
-    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
-    color: white;
-  }
-
-  .surprise-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
-  }
-
-  .surprise-button__icon {
     font-size: 18px;
   }
 
-  /* Hide labels on small screens */
-  @media (max-width: 480px) {
-    .mode-button__label {
-      display: none;
-    }
-    
+  .mode-button__label {
+    display: none;
+  }
+
+  /* Floating Action Button Style - Surprise Me */
+  .surprise-button {
+    width: auto;
+    min-width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #FF6B6B 0%, #EE5253 100%);
+    border: none;
+    box-shadow: 0 4px 16px rgba(255, 107, 107, 0.5);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .surprise-button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.6);
+  }
+
+  .surprise-button:active {
+    transform: scale(0.98);
+  }
+
+  .surprise-button__icon {
+    font-size: 20px;
+  }
+
+  .surprise-button__label {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  /* Ultra-compact for very small screens */
+  @media (max-width: 380px) {
     .surprise-button__label {
       display: none;
     }
-    
+
     .surprise-button {
-       padding: 8px 12px; /* Square-ish circle */
-       gap: 0;
+      padding: 12px;
+      min-width: 46px;
+      height: 46px;
+      gap: 0;
+    }
+
+    .mode-button {
+      padding: 8px;
+      min-width: 38px;
+      height: 38px;
+    }
+
+    .mode-button__icon {
+      font-size: 16px;
     }
   }
 
-  /* Adjust map controls */
+  /* Adjust Leaflet map controls to avoid overlap */
+  .leaflet-top.leaflet-right {
+    top: 200px !important;
+  }
+
   .leaflet-bottom {
-    bottom: 90px !important;
+    bottom: 20px !important;
   }
 
   .leaflet-left {
-    left: 10px !important;
+    left: 12px !important;
   }
-  
+
   .leaflet-control-zoom a {
-    width: 40px !important;
-    height: 40px !important;
-    line-height: 40px !important;
+    width: 44px !important;
+    height: 44px !important;
+    line-height: 44px !important;
+    font-size: 18px !important;
   }
 }
