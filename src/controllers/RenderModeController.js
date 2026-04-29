@@ -24,6 +24,8 @@
 import GlobePoliticalRenderer from '../renderers/GlobePoliticalRenderer';
 import GlobeSatelliteRenderer from '../renderers/GlobeSatelliteRenderer';
 import FlatMapRenderer from '../renderers/FlatMapRenderer';
+import { selectCountry } from '../store/countryStore';
+import { fetchCountryData } from '../utils/countryMatcher';
 
 // ============================================================================
 // Mode Definitions
@@ -88,6 +90,10 @@ export default class RenderModeController {
 
         // Shared GeoJSON data (loaded once, shared across renderers)
         this.sharedGeoJson = null;
+
+        // GeoJSON features confirmed to resolve through REST Countries.
+        this.randomSelectableFeatures = null;
+        this.randomSelectableFeaturesPromise = null;
 
         // Loading state
         this.isLoading = false;
@@ -259,7 +265,12 @@ export default class RenderModeController {
             if (!this.sharedGeoJson) return;
         }
 
-        const features = this.sharedGeoJson.features;
+        const features = await this.getRandomSelectableFeatures();
+        if (!features || features.length === 0) {
+            console.warn('[ModeController] No selectable countries available for random selection');
+            return;
+        }
+
         // Simple random pick
         const randomIndex = Math.floor(Math.random() * features.length);
         const randomFeature = features[randomIndex];
@@ -270,8 +281,6 @@ export default class RenderModeController {
         console.log('[ModeController] Surprise! Flying to:', countryName);
 
         // 1. Trigger valid store selection (popup)
-        // We import the selectCountry action directly to ensure it works consistently
-        const { selectCountry } = await import('../store/countryStore');
         selectCountry(randomFeature);
 
         // 2. Tell renderer to fly there
@@ -279,6 +288,52 @@ export default class RenderModeController {
         if (renderer && typeof renderer.focusOnCountry === 'function') {
             renderer.focusOnCountry(randomFeature);
         }
+    }
+
+    /**
+     * Get countries that can resolve to REST Countries data.
+     * WHY: Some GeoJSON features use names REST Countries cannot match. Validating
+     * once keeps Surprise Me from flying to a country with an empty popup.
+     */
+    async getRandomSelectableFeatures() {
+        if (this.randomSelectableFeatures) {
+            return this.randomSelectableFeatures;
+        }
+
+        if (this.randomSelectableFeaturesPromise) {
+            return this.randomSelectableFeaturesPromise;
+        }
+
+        this.randomSelectableFeaturesPromise = (async () => {
+            const features = this.sharedGeoJson?.features || [];
+            const selectable = [];
+
+            for (const feature of features) {
+                const countryName = feature?.properties?.NAME ||
+                    feature?.properties?.name ||
+                    feature?.properties?.ADMIN ||
+                    feature?.properties?.NAME_ENG ||
+                    feature?.properties?.NAME_EN;
+
+                if (!countryName) continue;
+
+                const countryData = await fetchCountryData(countryName);
+                if (countryData) {
+                    selectable.push(feature);
+                }
+            }
+
+            this.randomSelectableFeatures = selectable;
+            this.randomSelectableFeaturesPromise = null;
+            console.log('[ModeController] Validated random country pool:', selectable.length);
+            return selectable;
+        })().catch(error => {
+            this.randomSelectableFeaturesPromise = null;
+            console.error('[ModeController] Failed to validate random country pool:', error);
+            return [];
+        });
+
+        return this.randomSelectableFeaturesPromise;
     }
 
     /**
@@ -323,6 +378,8 @@ export default class RenderModeController {
         this.renderers.clear();
         this.currentMode = null;
         this.sharedGeoJson = null;
+        this.randomSelectableFeatures = null;
+        this.randomSelectableFeaturesPromise = null;
         this.modeChangeSubscribers.clear();
 
         console.log('[ModeController] All renderers destroyed');

@@ -128,6 +128,11 @@ export default class FlatMapRenderer extends BaseRenderer {
 
         // Map of feature ID/Index to Leaflet Layer (for updating colors)
         this.layerMap = new Map();
+
+        // Visible marker for Surprise Me / focused country
+        this.focusMarker = null;
+
+        this.handleMapNavigationStart = this.handleMapNavigationStart.bind(this);
     }
 
     /**
@@ -160,6 +165,9 @@ export default class FlatMapRenderer extends BaseRenderer {
             attribution: TILE_ATTRIBUTION,
             maxZoom: 18,
         }).addTo(this.map);
+
+        this.map.on('movestart', this.handleMapNavigationStart);
+        this.map.on('zoomstart', this.handleMapNavigationStart);
 
         // Load country boundaries
         await this.loadCountryBoundaries();
@@ -381,6 +389,48 @@ export default class FlatMapRenderer extends BaseRenderer {
             maxZoom: 5, // Don't zoom in too close for large countries
             duration: 1.5
         });
+
+        this.showFocusMarker(feature);
+    }
+
+    showFocusMarker(feature) {
+        if (!this.map) return;
+
+        const point = this.getFeatureMarkerPoint(feature);
+        const name = this.getFeatureName(feature);
+
+        if (this.focusMarker) {
+            this.map.removeLayer(this.focusMarker);
+            this.focusMarker = null;
+        }
+
+        this.focusMarker = L.circleMarker([point.lat, point.lng], {
+            radius: 9,
+            color: '#FFFFFF',
+            weight: 3,
+            fillColor: '#FF3B30',
+            fillOpacity: 0.95,
+            opacity: 1,
+            className: 'country-focus-marker',
+        }).addTo(this.map);
+
+        this.focusMarker.bindTooltip(name, {
+            permanent: true,
+            direction: 'top',
+            offset: [0, -12],
+            className: 'country-focus-tooltip',
+        });
+    }
+
+    handleMapNavigationStart() {
+        this.clearFocusMarkerAfterPanelClose();
+    }
+
+    clearFocusMarker() {
+        if (!this.focusMarker || !this.map) return;
+
+        this.map.removeLayer(this.focusMarker);
+        this.focusMarker = null;
     }
 
     /**
@@ -403,10 +453,20 @@ export default class FlatMapRenderer extends BaseRenderer {
 
         this.isDestroyed = true;
 
+        if (this.map) {
+            this.map.off('movestart', this.handleMapNavigationStart);
+            this.map.off('zoomstart', this.handleMapNavigationStart);
+        }
+
         // Remove GeoJSON layer
         if (this.geoJsonLayer && this.map) {
             this.map.removeLayer(this.geoJsonLayer);
             this.geoJsonLayer = null;
+        }
+
+        if (this.focusMarker && this.map) {
+            this.map.removeLayer(this.focusMarker);
+            this.focusMarker = null;
         }
 
         // Remove Leaflet map

@@ -13,7 +13,7 @@
  * - Event handling is standardized through the country store
  */
 
-import { selectCountry } from '../store/countryStore';
+import { getState, selectCountry } from '../store/countryStore';
 
 export default class BaseRenderer {
     /**
@@ -131,6 +131,24 @@ export default class BaseRenderer {
     }
 
     /**
+     * Clear the focused country marker.
+     * Subclasses override this when they draw a focus marker.
+     */
+    clearFocusMarker() {
+        // Default: no-op, subclasses override
+    }
+
+    /**
+     * Clear the focus marker after the popup has been closed and the user
+     * starts navigating again.
+     */
+    clearFocusMarkerAfterPanelClose() {
+        if (!getState().isPanelOpen) {
+            this.clearFocusMarker();
+        }
+    }
+
+    /**
      * Helper: Calculate the center (lat/lng) of a GeoJSON feature
      * @param {Object} feature - GeoJSON feature
      * @returns {Object} { lat, lng }
@@ -167,6 +185,85 @@ export default class BaseRenderer {
         return {
             lat: (minLat + maxLat) / 2,
             lng: (minLng + maxLng) / 2
+        };
+    }
+
+    /**
+     * Helper: Pick a visible marker point from a country's geometry.
+     * Uses the largest outer ring so the marker lands on the country shape.
+     * @param {Object} feature - GeoJSON feature
+     * @returns {Object} { lat, lng }
+     */
+    getFeatureMarkerPoint(feature) {
+        if (!feature || !feature.geometry) return this.getFeatureCenter(feature);
+
+        const geometry = feature.geometry;
+        let rings = [];
+
+        if (geometry.type === 'Polygon') {
+            rings = [geometry.coordinates[0]];
+        } else if (geometry.type === 'MultiPolygon') {
+            rings = geometry.coordinates.map(poly => poly[0]);
+        }
+
+        if (rings.length === 0) return this.getFeatureCenter(feature);
+
+        const largestRing = rings.reduce((largest, ring) => {
+            return this.getRingArea(ring) > this.getRingArea(largest) ? ring : largest;
+        }, rings[0]);
+
+        return this.getRingCentroid(largestRing) || this.getFeatureCenter(feature);
+    }
+
+    /**
+     * Helper: Get a display name from a GeoJSON feature.
+     * @param {Object} feature - GeoJSON feature
+     * @returns {string}
+     */
+    getFeatureName(feature) {
+        return feature?.properties?.NAME ||
+            feature?.properties?.name ||
+            feature?.properties?.ADMIN ||
+            feature?.properties?.NAME_ENG ||
+            feature?.properties?.NAME_EN ||
+            'Selected country';
+    }
+
+    getRingArea(ring = []) {
+        if (!ring || ring.length < 3) return 0;
+
+        let area = 0;
+        for (let i = 0; i < ring.length; i++) {
+            const [x1, y1] = ring[i];
+            const [x2, y2] = ring[(i + 1) % ring.length];
+            area += x1 * y2 - x2 * y1;
+        }
+
+        return Math.abs(area / 2);
+    }
+
+    getRingCentroid(ring = []) {
+        if (!ring || ring.length < 3) return null;
+
+        let signedArea = 0;
+        let lng = 0;
+        let lat = 0;
+
+        for (let i = 0; i < ring.length; i++) {
+            const [x1, y1] = ring[i];
+            const [x2, y2] = ring[(i + 1) % ring.length];
+            const cross = x1 * y2 - x2 * y1;
+            signedArea += cross;
+            lng += (x1 + x2) * cross;
+            lat += (y1 + y2) * cross;
+        }
+
+        signedArea *= 0.5;
+        if (Math.abs(signedArea) < 0.000001) return null;
+
+        return {
+            lng: lng / (6 * signedArea),
+            lat: lat / (6 * signedArea),
         };
     }
 

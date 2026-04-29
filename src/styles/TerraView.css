@@ -225,6 +225,26 @@
   border-top-color: rgba(0, 0, 0, 0.8) !important;
 }
 
+.country-focus-marker {
+  filter: drop-shadow(0 0 10px rgba(255, 59, 48, 0.85));
+}
+
+.country-focus-tooltip {
+  background: rgba(255, 59, 48, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  border-radius: 999px !important;
+  color: #FFFFFF !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.2px !important;
+  padding: 5px 10px !important;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35) !important;
+}
+
+.country-focus-tooltip::before {
+  border-top-color: rgba(255, 59, 48, 0.95) !important;
+}
+
 /* Leaflet controls styling */
 .leaflet-control-zoom {
   border: none !important;

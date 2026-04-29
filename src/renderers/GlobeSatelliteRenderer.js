@@ -66,6 +66,7 @@ export default class GlobeSatelliteRenderer extends BaseRenderer {
         this.globe = null;
         this.globeElement = null;
         this.animationFrameId = null;
+        this.focusMarker = null;
 
         // Interaction state
         this.isUserInteracting = false;
@@ -77,6 +78,7 @@ export default class GlobeSatelliteRenderer extends BaseRenderer {
         this.DRAG_THRESHOLD = 5;
         this.MIN_ALTITUDE = 1.0;
         this.MAX_ALTITUDE = 5.0;
+        this.AUTO_ROTATE_DELAY = 1500;
 
         // Bound event handlers
         this.handleInteractionStart = this.handleInteractionStart.bind(this);
@@ -172,6 +174,7 @@ export default class GlobeSatelliteRenderer extends BaseRenderer {
     handleInteractionStart(e) {
         this.isUserInteracting = true;
         this.lastInteractionTime = Date.now();
+        this.clearFocusMarkerAfterPanelClose();
 
         if (e && e.clientX !== undefined) {
             this.mouseDownPos = { x: e.clientX, y: e.clientY };
@@ -229,6 +232,7 @@ export default class GlobeSatelliteRenderer extends BaseRenderer {
         if (!feature || !this.globe) return;
 
         const center = this.getFeatureCenter(feature);
+        this.showFocusMarker(feature);
 
         // Stop current animation
         this.isUserInteracting = true; // Briefly look like interaction to pause auto-rotate
@@ -244,6 +248,47 @@ export default class GlobeSatelliteRenderer extends BaseRenderer {
             this.isUserInteracting = false;
             this.lastInteractionTime = Date.now();
         }, 1600);
+    }
+
+    showFocusMarker(feature) {
+        if (!this.globe) return;
+
+        const point = this.getFeatureMarkerPoint(feature);
+        const name = this.getFeatureName(feature);
+        this.focusMarker = [{ ...point, name }];
+
+        this.globe
+            .pointsData(this.focusMarker)
+            .pointLat(d => d.lat)
+            .pointLng(d => d.lng)
+            .pointAltitude(0.08)
+            .pointRadius(0.45)
+            .pointResolution(32)
+            .pointColor(() => '#FF3B30')
+            .pointLabel(d => d.name);
+
+        if (typeof this.globe.ringsData === 'function') {
+            this.globe
+                .ringsData(this.focusMarker)
+                .ringLat(d => d.lat)
+                .ringLng(d => d.lng)
+                .ringAltitude(0.09)
+                .ringColor(() => 'rgba(255, 59, 48, 0.85)')
+                .ringMaxRadius(4)
+                .ringPropagationSpeed(1.8)
+                .ringRepeatPeriod(900);
+        }
+    }
+
+    clearFocusMarker() {
+        if (!this.globe || !this.focusMarker) return;
+
+        this.focusMarker = null;
+        this.globe.pointsData([]);
+
+        if (typeof this.globe.ringsData === 'function') {
+            this.globe.ringsData([]);
+        }
     }
 
     /**
@@ -317,9 +362,9 @@ export default class GlobeSatelliteRenderer extends BaseRenderer {
                 controls.update();
             }
 
-            // Auto-rotate after 5 seconds of inactivity
+            // Auto-rotate shortly after the user stops interacting
             const timeSinceInteraction = Date.now() - this.lastInteractionTime;
-            if (!this.isUserInteracting && timeSinceInteraction > 5000) {
+            if (!this.isUserInteracting && timeSinceInteraction > this.AUTO_ROTATE_DELAY) {
                 const currentPOV = this.globe.pointOfView();
                 // Continue rotation from current position
                 this.rotation = (currentPOV.lng || 0) + 0.05;
@@ -389,6 +434,7 @@ export default class GlobeSatelliteRenderer extends BaseRenderer {
 
         this.globe = null;
         this.globeElement = null;
+        this.focusMarker = null;
 
         console.log('[GlobeSatellite] Destroyed');
     }
